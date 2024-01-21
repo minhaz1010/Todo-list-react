@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Todo = () => {
   const [sentence, setSentence] = useState("");
   const [list, setList] = useState([]);
+  const valueFromInput = useRef();
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("list"));
@@ -10,6 +11,12 @@ const Todo = () => {
       setList(data);
     }
   }, []);
+  const handleEnter = (event) => {
+    if (event.key === "Enter") {
+      setSentence(valueFromInput.current.value);
+      handleAdd();
+    }
+  };
 
   const handleAdd = () => {
     const updatedList = [...list, sentence];
@@ -51,10 +58,12 @@ const Todo = () => {
       <div className="flex mb-4">
         <input
           type="text"
+          ref={valueFromInput}
           value={sentence}
           onChange={(e) => setSentence(e.target.value)}
           className="w-full rounded-md py-2 px-3 border border-gray-300 focus:outline-none"
           placeholder="Add a new task"
+          onKeyUp={handleEnter}
         />
         <button
           onClick={handleAdd}
